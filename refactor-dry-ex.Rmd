@@ -1,0 +1,33 @@
+## Frisch aus dem Trockner, gut für die *confidence*
+
+```{r eval = FALSE, tidy=FALSE}
+x<-rnorm(100)
+y<-rnorm(100)
+z<-rnorm(100)
+v=z^2  
+
+m <- mean(x); s <- sd(x); n <- length(x)
+c(m - 1.96*s/sqrt(n), m + 1.96*s/sqrt(n))
+
+m <- mean(y)
+s <- sd(y)
+n <- length(y)
+c(m - 1.96*s/sqrt(n), m + 1.96*s/sqrt(n))
+
+n <- length(z)
+m <-  mean(z)
+s <-sd(z)
+c(m-1.96*s/sqrt(n),m+1.96*s/sqrt(n))
+
+n <- length(v)
+m <- mean(v)
+s <- sd(v)
+half_width <- 1.96*s/sqrt(n)
+c(m - half_width, m + half_width)
+``` 
+
+Bei so abscheulichem "copy-paste-modify" Code wie dem hier sollten Sie direkt schweiß*nasse* Hände bekommen, denn "**w**rite **e**verything **t**wice" ist der sichere Weg ins Verderben.  
+Bringen Sie die Sache also in *trockene* Tücher in dem Sie den redundanten Code als Funktion einkapseln und diese dann wiederholt aufrufen -- **d**on't **r**epeat **y**ourself !!11!
+
+*Hinweis 1:* In RStudio ist das besonders besonders einfach -- markieren Sie den Code den Sie einkapseln möchten und drücken Sie `<Strg + Alt + X>` (oder klicken Sie im Menü "Code" auf "Extract Function").  
+*Hinweis 2:* Der Code oben ist nicht nur redundant (bäh!), er ist auch nicht konsistent nach dem Styleguide formatiert (pfui!). Bringen Sie das in Ihrer Lösung in Ordnung, entweder mit flinken Fingern durch Ihr geschultes Auge und Ihren wachen Verstand, oder, wesentlich einfacher & zuverlässiger, indem Sie die RStudio-Addins des `styler`-Pakets zum Umformatieren benutzen.

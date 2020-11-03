@@ -1,0 +1,83 @@
+## "It's complicated." 
+
+![](https://media.giphy.com/media/3ov9jY5zo2kpp7mmQM/giphy.gif)
+
+Vereinfachen Sie folgende Funktion, ohne ihre Funktionsweise zu verändern:  
+
+- werden sie überflüssige *else*-Blöcke los
+- nutzen Sie *early exits* und betonen Sie den *happy path*
+- vereinfachen Sie überflüssige oder redundante Fallunterscheidungen
+
+```{r, def-swipe-right}
+# Decide whether to swipe right (express interest) or left (express disinterest)
+#   on somebody's profile.
+# inputs:
+#   swiper: list object representing somebody swiping left or right in a dating app
+#   profile: list object representing the profile of the person who is being swiped left or right
+# output: TRUE/FALSE
+swipe_right <- function(swiper, profile) {
+  if (profile[["has_picture"]]) {
+    if (profile[["picture_attractive"]]) {
+      if (swiper[["sober"]]) {
+        if (!all(is.na(profile[["likes"]]))) {
+          if (profile[["rather_weird"]]) {
+            return(FALSE)
+          } else {
+            if (any(swiper[["likes"]] %in% profile[["likes"]])) {
+              return(TRUE)
+            } else {
+              return(FALSE)
+            }
+          }
+        } else {
+          stop("can't decide without informative profile.")
+        }
+      } else {
+        return(TRUE)
+      }
+    } else {
+      return(FALSE)
+    }
+  } else {
+    stop("can't decide without a picture.")
+  }
+}
+```
+
+Benutzen Sie die folgenden Codebeispiele um zu prüfen ob Ihre modifizierte Funktion auch wirklich das selbe tut.  
+*Bonusaufgabe: wandeln Sie das hier in vernünftige `testthat`-Tests um...*
+
+```{r, examples-swipe-right, error = TRUE}
+test_swipers <- list(
+  sober_swiper = list(sober = TRUE, 
+                      likes = c("penguins", "FORTRAN",  "casual sex")),
+  drunk_swiper = list(sober = FALSE, 
+                      likes = c("dogs", "yoga", "Markus Söder"))
+)
+
+test_profiles <- list(
+  hot_1 = list(has_picture = TRUE, picture_attractive = TRUE,
+               rather_weird = FALSE, likes = "penguins"),
+  hot_2 = list(has_picture = TRUE, picture_attractive = TRUE,
+               rather_weird = FALSE, likes = "Pokemon"),
+  hotweird = list(has_picture = TRUE, picture_attractive = TRUE,
+                  rather_weird = TRUE, likes = "penguins"),
+  nothot_1 = list(has_picture = TRUE, picture_attractive = FALSE,
+                  rather_weird = FALSE, likes = "Markus Söder"),
+  nothot_2 = list(has_picture = TRUE, picture_attractive = FALSE,
+                  rather_weird = FALSE, likes = "cats"),
+  no_pic = list(has_picture = FALSE, picture_attractive = NA,
+                likes = c("hamsters", "yoga"))
+)
+
+# check all combinations:
+for(swiper in names(test_swipers)) {
+  for(profile in names(test_profiles)) {
+    cat("Does", swiper, "swipe right on", profile, "?",
+        try(swipe_right(test_swipers[[swiper]], test_profiles[[profile]]), silent = TRUE),
+        "\n")
+  }
+}
+```
+
+

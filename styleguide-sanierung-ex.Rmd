@@ -1,0 +1,14 @@
+## Sanierungsfall
+
+![](https://media.giphy.com/media/u6O8HzquWkXsc/giphy.gif)
+
+Suchen Sie ein R-Skript aus Ihren alten Kursunterlagen, Praktikumsprojekten, Seminarvorträgen etc. heraus (idealerweise so 50 - 200 Zeilen) das Ihnen unsauber oder chaotisch vorkommt, von dem Sie aber noch wissen was es tun soll. Kopieren Sie das Ding in ihr Git-Repository und committen Sie es erst mal mitsamt all seinen Warzen, Geschwüren und sonstigen Unzulänglichkeiten (s.a. Bild oben). 
+
+a) Bringen Sie das Skript mit der Hilfe des  "Style Active File" RStudio-Addins aus dem `styler`-Paket auf Vordermann. Verbessern sie die Benamung von Funktionen und Variablen und stellen Sie sicher dass Ihr Code die Richtlinien in Hadley Wickham's [style guide](http://r-pkgs.had.co.nz/style.html) befolgt. Speichern Sie das verbesserte File unter einem neuen (besseren) Namen ab.
+
+b) Betrachten Sie Ihren Code kritisch im Hinblick auf die angesprochenen "Code Smells" (s. Materialien zu Programmierstil & Programmentwurf) -- riechen Sie was? Notieren Sie was Ihnen im alten Code ungünstig erscheint und ergreifen Sie entsprechende Gegenmaßnahmen. 
+Speichern Sie das nochmals verbesserte File unter einem neuen (besseren) Namen ab.
+
+c) Auf einer Skala von 1-10, wie viel verständlicher und lesbarer ist der korrigierte Code?
+
+*Hinweis*: Die korrekte Antwort zu c) ist typischerweise $>8$.
