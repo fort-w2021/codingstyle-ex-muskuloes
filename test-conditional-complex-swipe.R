@@ -1,7 +1,7 @@
 context("style & syntax of swipe_right")
 
 # get syntax info of swipe function:
-swipe_source <- parse(text = deparse(swipe))
+swipe_source <- parse(text = deparse(swipe_right))
 swipe_parsed <- utils::getParseData(swipe_source)
 
 test_that("all <else>-blocks have been removed", {
