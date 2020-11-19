@@ -1,0 +1,138 @@
+```{r, child = "conditional-complex-swipe-ex.Rmd"}
+```
+
+----------------------------------------------------
+
+### Lösung:
+
+1. Alle überflüssigen `else`-Blöcke enfernen: Das sind in dem Fall hier alle, da 
+jede einzelne `if`-Bedingung hier in einen Ausdruck mündet, der die Funktionsauswertung beendet
+-- entweder mit `stop` oder mit `return`.
+```{r, swipe-improved-1}
+# Decide whether to swipe right (express interest) or left (express disinterest)
+#   on somebody's profile.
+# inputs:
+#   swiper: list object representing somebody swiping left or right in a dating app
+#   profile: list object representing the profile of the person who is being swiped left or right
+# output: TRUE/FALSE
+swipe_right <- function(swiper, profile) {
+  if (profile[["has_picture"]]) {
+    if (profile[["picture_attractive"]]) {
+      if (swiper[["sober"]]) {
+        if (!all(is.na(profile[["likes"]]))) {
+          if (profile[["rather_weird"]]) {
+            return(FALSE)
+          } 
+          if (any(swiper[["likes"]] %in% profile[["likes"]])) {
+            return(TRUE)
+          } 
+          return(FALSE)
+        } 
+        stop("can't decide without a profile.")
+      } 
+      return(TRUE)
+    } 
+    return(FALSE)
+  }
+  stop("can't decide without a picture.")
+}
+```
+
+Also: 20 statt 26 Zeilen und deutlich weniger Einrückungen. Besser als nichts...
+
+2. *early exits* identifizieren und nach oben schieben: 
+```{r}
+# Decide whether to swipe right (express interest) or left (express disinterest)
+#   on somebody's profile.
+# inputs:
+#   swiper: list object representing somebody swiping left or right in a dating app
+#   profile: list object representing the profile of the person who is being swiped left or right
+# output: TRUE/FALSE
+swipe <- function(swiper, picture, profile) {
+  if (!profile[["has_picture"]]) {
+    stop("can't decide without a picture.")
+  }
+  if (!profile[["picture_attractive"]]) {
+    return(FALSE)
+  }
+  if (!swiper[["sober"]]) {
+    return(TRUE)
+  }
+  if (all(is.na(profile[["likes"]]))) {
+    stop("can't decide without an informative profile.")
+  }
+  if (profile[["rather_weird"]]) {
+    return(FALSE)
+  }
+  if (any(swiper[["likes"]] %in% profile[["likes"]])) {
+    return(TRUE)
+  }
+  FALSE # `return` is reserved for 'early exits'!
+}
+```
+
+Struktur wird wesentlich klarer:  
+a) Verfügbarkeit des Bildes und Attraktivität der abgebildeten Person entscheiden primär.  
+b) Existenz und Inhalt eines Profiltexts sind betrunken Wischenden dann einerlei.  
+c) Nüchtern Wischende benötigen einen Profiltext um eine Entscheidung zu treffen.  
+d) Nüchtern Wischende wischen links falls der Profiltext Alarmglocken schrillen lässt und/oder das Bild nicht den optischen Vorlieben entspricht.  
+
+3. Also Fallunterscheidungen in d) nochmal zusammenführen: 
+
+```{r}
+# Decide whether to swipe right (express interest) or left (express disinterest)
+#   on somebody's profile.
+# inputs:
+#   swiper: list object representing somebody swiping left or right in a dating app
+#   profile: list object representing the profile of the person who is being swiped left or right
+# output: TRUE/FALSE
+swipe <- function(swiper, picture, profile) {
+  if (!profile[["has_picture"]]) {
+    stop("can't decide without a picture.")
+  }
+  if (!profile[["picture_attractive"]]) {
+    return(FALSE)
+  }
+  if (!swiper[["sober"]]) {
+    return(TRUE)
+  }
+  if (all(is.na(profile[["likes"]]))) {
+    stop("can't decide without an informative profile.")
+  }
+  if (profile[["rather_weird"]] | 
+      !any(swiper[["likes"]] %in% profile[["likes"]])) {
+    return(FALSE)
+  }
+  TRUE # `return` is reserved for 'early exits'!
+}
+```
+
+Immer noch einigermaßen kompliziert, aber nur noch ein Level an Einrückungen und 
+damit deutlich einfacher zu verstehen wann was passiert. 
+*Nota bene:* `all(is.na(profile[["likes"]]))` leistet hier mehr als offensichtlich ist -- 
+das gibt auch dann `TRUE` zurück wenn da keine `NA`s stehen sondern der `"likes"`-Eintrag gar nicht existiert (`NULL`) oder ein leerer Vektor der Länge 0 ist, weil `all(logical(0))` `TRUE` ergibt....
+
+
+Noch knapper & klarer (...?):  
+Kriterien fürs Rechtswischen in eigene Unterfunktion auslagern:
+```{r}
+# adapted from Alex Piehler:
+fits_criteria <- function(swiper, profile) {
+  seems_nice <- 
+    !profile[["rather_weird"]] & 
+    any(swiper[["likes"]] %in% profile[["likes"]])
+  
+  profile[["picture_attractive"]] & 
+    (!swiper[["sober"]] | seems_nice)
+} 
+
+swipe_right <- function(swiper, profile) {
+  if (!profile[["has_picture"]]) {
+    stop("can't decide without a picture")
+  }
+  if (swiper[["sober"]] & all(is.na(profile[["likes"]]))) {
+    stop("can't decide without an informative profile.")
+  }
+  fits_criteria(swiper, profile)
+}
+```
